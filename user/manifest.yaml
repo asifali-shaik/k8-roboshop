@@ -8,9 +8,9 @@ metadata:
     tier : backend 
     component: user
 data:
-  MONGO="true"
-  REDIS_URL='redis://redis:6379'
-  MONGO_URL="mongodb://mongodb:27017/user"
+  MONGO:"true"
+  REDIS_URL:'redis://redis:6379'
+  MONGO_URL:"mongodb://mongodb:27017/user"
 
 ---
 apiVersion: apps/v1

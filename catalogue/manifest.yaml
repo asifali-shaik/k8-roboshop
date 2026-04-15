@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata: 
-  name: cartlogue 
+  name: catalogue 
   namespace: roboshop 
   labels:
     project: roboshop
     tier : backend 
-    component: cartlogue 
+    component: catalogue 
 data:
   MONGO="true"
   MONGO_URL="mongodb://mongodb:27017/catalogue"
@@ -15,30 +15,30 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cartlogue 
+  name: catalogue 
   namespace: roboshop
   labels:
     project: roboshop 
     tier: backend 
-    component : cartlogue 
+    component : catalogue 
 spec:
   replicas: 1
   selector:
     matchLabels:
       project : roboshop 
       tier : backend  
-      component : cartlogue 
+      component : catalogue 
   template:
     metadata:
       labels:
         project: roboshop
         tier : backend 
-        component : cartlogue 
+        component : catalogue 
     spec:
       containers:
-      - name: cartlogue
+      - name: catalogue
         imagePullPolicy: Always 
-        image: shaikaliasif/cartlogue:1.0.0 
+        image: shaikaliasif/catalogue:1.0.0 
         resources:
           requests:
             cpu: "100m"
@@ -64,23 +64,23 @@ spec:
 
         envFrom:
          - configMapRef:
-            name: cartlogue 
+            name: catalogue 
 
 --- 
 apiVersion: v1
 kind: Service 
 metadata:
-  name: cartlogue 
+  name: catalogue 
   namespace: roboshop
   labels: 
    project: roboshop 
    tier: backend 
-   component : cartlogue 
+   component : catalogue 
 spec:   # this help service to match the exactly labels 
   selector:
     project: roboshop 
     tier : backend 
-    component : cartlogue 
+    component : catalogue 
   ports:
     - protocol: TCP
       port: 8080
