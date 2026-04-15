@@ -1,0 +1,88 @@
+apiVersion: v1
+kind: configmap
+metadata: 
+  name: user 
+  namespace: roboshop 
+  labels:
+    project: roboshop
+    tier : backend 
+    component: user
+data:
+  MONGO="true"
+  REDIS_URL='redis://redis:6379'
+  MONGO_URL="mongodb://mongodb:27017/user"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user 
+  namespace: roboshop
+  labels:
+    project: roboshop 
+    tier: backend 
+    component : user 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project : roboshop 
+      tier : backend  
+      component : user
+  template:
+    metadata:
+      labels:
+        project: roboshop
+        tier : backend 
+        component : user
+    spec:
+      containers:
+      - name: user
+        imagePullPolicy: Always 
+        image: shaikaliasif/cartlogue:1.4.0 
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "100m"
+            memory: "128Mi"
+        readinessProbe:
+          # httpGet:
+          #   path: /health
+          #   port: 8080
+          tcpSocket:
+            port: 8080
+          failureThreshold: 2
+          periodSeconds: 10
+          initialDelaySeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          failureThreshold: 2
+          periodSeconds: 10
+
+        envFrom:
+         - configMapRef:
+            name: user
+
+--- 
+apiVersion: v1
+kind: Service 
+metadata:
+  name: user 
+  namespace: roboshop
+  labels: 
+   project: roboshop 
+   tier: backend 
+   component : user
+spec:   # this help service to match the exactly labels 
+  selector:
+    project: roboshop 
+    tier : backend 
+    component : user 
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

@@ -1,0 +1,88 @@
+apiVersion: v1
+kind: configmap
+metadata: 
+  name: cart
+  namespace: roboshop 
+  labels:
+    project: roboshop
+    tier : backend 
+    component: cart 
+data:
+  REDIS="redis"
+  CARTLOGUE_HOST:"catalogue"
+  CARTLOGUE_PORT:"8080"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cart 
+  namespace: roboshop
+  labels:
+    project: roboshop 
+    tier: backend 
+    component : cart
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project : roboshop 
+      tier : backend  
+      component : cart
+  template:
+    metadata:
+      labels:
+        project: roboshop
+        tier : backend 
+        component : cart
+    spec:
+      containers:
+      - name: cart
+        imagePullPolicy: Always 
+        image: shaikaliasif/cart:1.4.0 
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "100m"
+            memory: "128Mi"
+        readinessProbe:
+          # httpGet:
+          #   path: /health
+          #   port: 8080
+          tcpSocket:
+            port: 8080
+          failureThreshold: 2
+          periodSeconds: 10
+          initialDelaySeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          failureThreshold: 2
+          periodSeconds: 10
+
+        envFrom:
+         - configMapRef:
+            name: cart
+
+--- 
+apiVersion: v1
+kind: Service 
+metadata:
+  name: cart 
+  namespace: roboshop
+  labels: 
+   project: roboshop 
+   tier: backend 
+   component : cart 
+spec:   # this help service to match the exactly labels 
+  selector:
+    project: roboshop 
+    tier : backend 
+    component : cart 
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

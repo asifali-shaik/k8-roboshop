@@ -1,0 +1,91 @@
+apiVersion: v1
+kind: configmap
+metadata: 
+  name: payment 
+  namespace: roboshop 
+  labels:
+    project: roboshop
+    tier : backend 
+    component: payment
+data:
+  CART_HOST: "cart"
+  CART_PORT: "8080"
+  USER_HOST: "user"
+  USER_PORT: "8080"
+  AMQP_HOST: "rabbitmq"
+  AMQP_USER: "roboshop"
+  AMQP_PASS: "roboshop123"
+
+---
+kind: Deployment
+metadata:
+  name: payment 
+  namespace: roboshop
+  labels:
+    project: roboshop 
+    tier: backend 
+    component : payment 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project : roboshop 
+      tier : backend  
+      component : payment 
+  template:
+    metadata:
+      labels:
+        project: roboshop
+        tier : backend 
+        component : payment 
+    spec:
+      containers:
+      - name: payment
+        imagePullPolicy: Always 
+        image: shaikaliasif/payment:1.4.0 
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "100m"
+            memory: "128Mi"
+        readinessProbe:
+          # httpGet:
+          #   path: /health
+          #   port: 8080
+          tcpSocket:
+            port: 8080
+          failureThreshold: 2
+          periodSeconds: 10
+          initialDelaySeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          failureThreshold: 2
+          periodSeconds: 10
+
+        envFrom:
+         - configMapRef:
+            name: payment 
+
+--- 
+apiVersion: v1
+kind: Service 
+metadata:
+  name: payment 
+  namespace: roboshop
+  labels: 
+   project: roboshop 
+   tier: backend 
+   component : payment 
+spec:   # this help service to match the exactly labels 
+  selector:
+    project: roboshop 
+    tier : backend 
+    component : payment 
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

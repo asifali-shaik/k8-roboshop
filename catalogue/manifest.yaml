@@ -1,0 +1,87 @@
+apiVersion: v1
+kind: configmap
+metadata: 
+  name: cartlogue 
+  namespace: roboshop 
+  labels:
+    project: roboshop
+    tier : backend 
+    component: cartlogue 
+data:
+  MONGO="true"
+  MONGO_URL="mongodb://mongodb:27017/catalogue"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cartlogue 
+  namespace: roboshop
+  labels:
+    project: roboshop 
+    tier: backend 
+    component : cartlogue 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project : roboshop 
+      tier : backend  
+      component : cartlogue 
+  template:
+    metadata:
+      labels:
+        project: roboshop
+        tier : backend 
+        component : cartlogue 
+    spec:
+      containers:
+      - name: cartlogue
+        imagePullPolicy: Always 
+        image: shaikaliasif/cartlogue:1.0.0 
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "100m"
+            memory: "128Mi"
+        readinessProbe:
+          # httpGet:
+          #   path: /health
+          #   port: 8080
+          tcpSocket:
+            port: 8080
+          failureThreshold: 2
+          periodSeconds: 10
+          initialDelaySeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          failureThreshold: 2
+          periodSeconds: 10
+
+        envFrom:
+         - configMapRef:
+            name: cartlogue 
+
+--- 
+apiVersion: v1
+kind: Service 
+metadata:
+  name: cartlogue 
+  namespace: roboshop
+  labels: 
+   project: roboshop 
+   tier: backend 
+   component : cartlogue 
+spec:   # this help service to match the exactly labels 
+  selector:
+    project: roboshop 
+    tier : backend 
+    component : cartlogue 
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
