@@ -39,7 +39,7 @@ spec:
       containers:
       - name: user
         imagePullPolicy: Always 
-        image: shaikaliasif/cartlogue:1.4.0 
+        image: shaikaliasif/user:1.4.0 
         resources:
           requests:
             cpu: "100m"
