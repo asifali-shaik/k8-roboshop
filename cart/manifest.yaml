@@ -8,9 +8,9 @@ metadata:
     tier : backend 
     component: cart 
 data:
-  REDIS:"redis"
-  CARTLOGUE_HOST:"catalogue"
-  CARTLOGUE_PORT:"8080"
+  REDIS: "redis"
+  CARTLOGUE_HOST: "catalogue"
+  CARTLOGUE_PORT: "8080"
 
 ---
 apiVersion: apps/v1
