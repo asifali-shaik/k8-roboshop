@@ -17,6 +17,7 @@ data:
   AMQP_PASS: "roboshop123"
 
 ---
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: payment 
