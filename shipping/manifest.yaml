@@ -42,10 +42,10 @@ spec:
         resources:
           requests:
             cpu: "300m"
-            memory: "300Mi"
+            memory: "500Mi"
           limits:
             cpu: "300m"
-            memory: "350Mi"
+            memory: "500Mi"
         readinessProbe:
           # httpGet:
           #   path: /health
@@ -68,8 +68,8 @@ spec:
           failureThreshold: 20
           periodSeconds: 10
         envFrom:
-         - configMapRef:
-             name: shipping
+            - configMapRef:
+               name: shipping
 
 --- 
 apiVersion: v1
