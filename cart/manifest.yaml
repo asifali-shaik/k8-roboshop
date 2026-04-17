@@ -39,7 +39,7 @@ spec:
       containers:
       - name: cart
         imagePullPolicy: Always 
-        image: shaikaliasif/cart:1.4.0 
+        image: shaikaliasif/cart:1.4.5
         resources:
           requests:
             cpu: "100m"
