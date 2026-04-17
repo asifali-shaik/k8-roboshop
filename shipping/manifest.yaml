@@ -37,7 +37,7 @@ spec:
       containers:
       - name: shipping
         imagePullPolicy: Always 
-        image: shaikaliasif/shipping:1.4.0 
+        image: shaikaliasif/shipping:1.4.5 
         resources:
           requests:
             cpu: "300m"
