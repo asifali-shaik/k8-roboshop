@@ -1,7 +1,8 @@
 apiVersion: v1
 kind: ConfigMap
-namespace: roboshop
 metadata:
+  name: frontend 
+  namespace: roboshop
   labels: 
    name: frontend 
    tier: frontend 
@@ -98,8 +99,8 @@ spec:
         component : frontend 
     spec:
       volumes:
-      - name: nginx-config
-        configMap:
+       - name: nginx-config
+         configMap:
           name: frontend
       containers:
       - name: frontend
@@ -128,7 +129,6 @@ spec:
           failureThreshold: 2
           periodSeconds: 10
         volumeMounts:
-          volumeMounts:
           - name: nginx-config
           # by default it mounts and thinks as directory
             mountPath: "/etc/nginx/nginx.conf"
